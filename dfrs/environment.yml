@@ -1,0 +1,7 @@
+name: dfrs 
+channels:
+  - conda-forge
+dependencies:
+  - python
+  - rust 
+  - maturin 
