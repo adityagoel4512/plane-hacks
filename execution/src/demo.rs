@@ -13,7 +13,6 @@ fn main() {
     .unwrap();
 
     let tokens = lex_multiline(program.as_str()).expect("Failed to lex");
-    println!("{tokens:?}");
     // We could parse tok stream to each ast builder
     let (asts, fails): (Vec<_>, Vec<_>) = tokens
         .par_iter()
@@ -23,9 +22,7 @@ fn main() {
             Err(e) => itertools::Either::Right(e),
         });
 
-    if fails.is_empty() {
-        println!("{asts:?}");
-    } else {
+    if !fails.is_empty() {
         println!("Failed to parse: {fails:?}");
     }
     let mut gs: Vec<_> = asts

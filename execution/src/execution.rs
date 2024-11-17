@@ -1,6 +1,7 @@
 use crate::lexer::Term;
 use crate::lexer::Token::*;
 use crate::parser::ParseNode;
+use crate::print_tid;
 use rayon::iter::IndexedParallelIterator;
 use rayon::iter::IntoParallelRefIterator;
 use rayon::iter::ParallelIterator;
@@ -9,7 +10,6 @@ use std::fmt::Debug;
 use std::result::Result;
 use std::sync::mpsc::{channel, Receiver, Sender};
 use std::sync::Arc;
-
 #[derive(Debug)]
 pub enum Var {
     IntV(Vec<i64>),
@@ -75,7 +75,6 @@ impl From<bool> for Var {
 type ExecutionResult = Result<Arc<Var>, String>;
 type SenderChannels = Vec<Sender<Arc<Var>>>;
 type ReceiverChannel = Receiver<Arc<Var>>;
-// type ReceiverChannels = Vec<ReceiverChannel>;
 
 trait OperatorTrait: Debug {
     fn new(parser: &ParseNode) -> Result<ExecutionGraph, ()>
@@ -192,7 +191,7 @@ impl OperatorTrait for Constant {
                     broadcasts_to: vec![],
                     item: Arc::new(Var::FloatV(vec![*f])),
                 })]),
-                _ => unreachable!(),
+                _ => Err(()),
             };
             ops.map(|v| ExecutionGraph { ops: v })
         } else {
@@ -201,7 +200,7 @@ impl OperatorTrait for Constant {
     }
 
     fn compute(&self) -> Result<(), String> {
-        dbg!(std::thread::current().id());
+        print_tid!();
         for sender in &self.broadcasts_to {
             sender
                 .send(self.item.clone())
@@ -308,7 +307,7 @@ impl OperatorTrait for BinaryOperator {
 
     fn compute(&self) -> Result<(), String> {
         // Wait on inputs
-        dbg!(std::thread::current().id());
+        print_tid!();
         let lhs = self.lhs.recv().map_err(|e| e.to_string())?;
         let rhs = self.rhs.recv().map_err(|e| e.to_string())?;
         let result = (*self.f)(lhs, rhs)?;

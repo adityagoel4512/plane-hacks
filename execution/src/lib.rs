@@ -8,3 +8,4 @@ pub mod execution;
 /// 3. We operate on Vec<i64>, Vec<f64> and Vec<bool>
 pub mod lexer;
 pub mod parser;
+mod utils;

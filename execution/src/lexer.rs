@@ -3,6 +3,8 @@ use itertools::Itertools;
 use rayon::prelude::*;
 use std::collections::VecDeque;
 
+use crate::print_tid;
+
 #[derive(Debug)]
 pub struct LexError {
     substr: String,
@@ -118,7 +120,7 @@ pub fn lex_multiline(program: &str) -> LexResult<Vec<Vec<Token>>> {
 }
 
 pub fn lex<I: Iterator<Item = char>>(program: I) -> LexResult<Vec<Token>> {
-    dbg!(std::thread::current().id());
+    print_tid!("lex");
     let mut it = PeekIter::consume_iter(program);
     let mut token_stream = vec![];
     while let Some(c) = it.next() {

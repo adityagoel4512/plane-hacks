@@ -1,5 +1,6 @@
 /// hacky parser: &[Token] => Result<AST>
 use crate::lexer::{Term, Token, Token::*};
+use crate::print_tid;
 use std::result::Result;
 
 #[derive(Debug)]
@@ -76,7 +77,7 @@ fn parse_expr<'s>(tokens: &'s [Token]) -> ParseResult<(ParseNode, &'s [Token])> 
 
 // There are *zero* type checks or error messages (just if it succeeds or not).
 pub fn parse(tokens: &[Token]) -> ParseResult<ParseNode> {
-    dbg!(std::thread::current().id());
+    print_tid!("parse");
     let (node, remaining) = parse_expr(tokens)?;
     if remaining.is_empty() {
         Ok(node)

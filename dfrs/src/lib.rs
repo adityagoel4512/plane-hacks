@@ -369,14 +369,17 @@ impl DataFrame {
 
     #[staticmethod]
     fn from_csv(path: Bound<'_, PyString>) -> PyResult<Self> {
+        let py = path.py();
         let path: String = path.extract()?;
-        let file = File::open(path)?;
-        let reader = BufReader::new(file);
-        // TODO: move out of Box<dyn Error>
-        match Self::from_csv_reader(reader) {
-            Err(_) => Err(PyValueError::new_err("Failed to parse appropriately")),
-            Ok(res) => Ok(res),
-        }
+        py.allow_threads(|| {
+            let file = File::open(path)?;
+            let reader = BufReader::new(file);
+            // TODO: move out of Box<dyn Error>
+            match Self::from_csv_reader(reader) {
+                Err(_) => Err(PyValueError::new_err("Failed to parse appropriately")),
+                Ok(res) => Ok(res),
+            }
+        })
     }
 }
 
