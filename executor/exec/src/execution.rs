@@ -17,6 +17,16 @@ pub enum Var {
     BoolV(Vec<bool>),
 }
 
+impl ToString for Var {
+    fn to_string(&self) -> String {
+        match self {
+            Self::IntV(i) => format!("{i:?}"),
+            Self::FloatV(f) => format!("{f:?}"),
+            Self::BoolV(b) => format!("{b:?}"),
+        }
+    }
+}
+
 #[derive(Debug, PartialEq)]
 pub enum Dtype {
     Int,

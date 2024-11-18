@@ -5,10 +5,18 @@ use std::collections::VecDeque;
 
 use crate::print_tid;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct LexError {
     substr: String,
 }
+
+impl std::fmt::Display for LexError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "LexError")
+    }
+}
+
+impl std::error::Error for LexError {}
 
 pub type LexResult<T> = std::result::Result<T, LexError>;
 

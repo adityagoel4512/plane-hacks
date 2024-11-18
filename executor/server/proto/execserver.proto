@@ -1,0 +1,16 @@
+syntax = "proto3";
+package execserver;
+
+service ExecutorService {
+    rpc ExecuteExpression(ExpressionRequest) returns (ExpressionResponse);
+}
+
+message ExpressionRequest {
+    // Expression to be evaluated by expression engine.
+    string expression = 1;
+}
+
+message ExpressionResponse {
+    // Response from expression engine.
+    string result = 1;
+}
